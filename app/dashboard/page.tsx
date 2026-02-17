@@ -25,6 +25,11 @@ export default function DashboardPage() {
     const [error, setError] = useState('');
 
     useEffect(() => {
+        console.log('🌍 ========== ENVIRONMENT AUDIT ==========');
+        console.log('📍 Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL);
+        console.log('🔑 Anon Key (first 20 chars):', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.substring(0, 20) + '...');
+        console.log('🖥️ Window Location:', window.location.href);
+
         const supabase = createClient();
         let channel: ReturnType<typeof supabase.channel> | null = null;
 
@@ -46,6 +51,12 @@ export default function DashboardPage() {
                     provider: session.user.app_metadata?.provider
                 });
                 console.log('🔍 Fetching bookmarks for user_id:', session.user.id);
+                console.log('📊 Query details:', {
+                    table: 'sbookmarktbl',
+                    schema: 'public (implicit)',
+                    filter_user_id: session.user.id,
+                    filter_is_deleted: false
+                });
 
                 const { data, error: fetchError } = await supabase
                     .from('sbookmarktbl')
@@ -53,6 +64,13 @@ export default function DashboardPage() {
                     .eq('user_id', session.user.id)
                     .eq('is_deleted', false)
                     .order('created_at', { ascending: false });
+
+                console.log('📦 RAW FETCH RESULT:');
+                console.log('  Data:', data);
+                console.log('  Error:', fetchError);
+                console.log('  Data type:', typeof data);
+                console.log('  Data is array:', Array.isArray(data));
+                console.log('  Data length:', data?.length);
 
                 if (fetchError) {
                     console.error('❌ FETCH ERROR DETECTED');
