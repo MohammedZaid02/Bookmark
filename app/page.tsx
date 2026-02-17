@@ -1,6 +1,5 @@
 import Navbar from '@/components/Navbar';
 import AuthButton from '@/components/AuthButton';
-import Link from 'next/link';
 
 export default function HomePage() {
   return (
@@ -37,12 +36,6 @@ export default function HomePage() {
           {/* CTA button */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
             <AuthButton />
-            <Link
-              href="/dashboard"
-              className="px-8 py-4 bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 text-gray-900 dark:text-white rounded-2xl font-semibold text-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-            >
-              View Demo
-            </Link>
           </div>
 
           {/* Feature cards */}

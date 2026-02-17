@@ -39,6 +39,14 @@ export default function DashboardPage() {
 
                 setUser(session.user);
 
+                console.log('🔐 ========== AUTH AUDIT ==========');
+                console.log('👤 Logged in user:', {
+                    id: session.user.id,
+                    email: session.user.email,
+                    provider: session.user.app_metadata?.provider
+                });
+                console.log('🔍 Fetching bookmarks for user_id:', session.user.id);
+
                 const { data, error: fetchError } = await supabase
                     .from('sbookmarktbl')
                     .select('*')
@@ -70,9 +78,16 @@ export default function DashboardPage() {
                     setError(userMessage);
                     setBookmarks([]);
                 } else {
-                    console.log('✅ SUCCESS - No errors');
-                    console.log('Data received:', data);
-                    console.log(`Bookmark count: ${data?.length || 0}`);
+                    console.log('✅ FETCH SUCCESS');
+                    console.log('📊 Bookmark count:', data?.length || 0);
+                    if (data && data.length > 0) {
+                        console.log('📋 Bookmarks found:');
+                        data.forEach((bm: any, idx: number) => {
+                            console.log(`  ${idx + 1}. user_id: ${bm.user_id}, title: ${bm.title}`);
+                        });
+                    } else {
+                        console.log('⚠️ No bookmarks found for this user_id');
+                    }
                     if (data && data.length > 0) {
                         const uiBookmarks = (data as DbBookmark[]).map(dbToUiBookmark);
                         setBookmarks(uiBookmarks);
@@ -179,6 +194,9 @@ export default function DashboardPage() {
         const faviconUrl = getFaviconUrl(newBookmark.url);
 
         try {
+            console.log('➕ ========== INSERT AUDIT ==========');
+            console.log('👤 Inserting for user_id:', user.id);
+
             const insertData = createBookmarkInsert(
                 user.id,
                 newBookmark.url,
@@ -187,6 +205,12 @@ export default function DashboardPage() {
                 faviconUrl,
                 newBookmark.tags
             );
+
+            console.log('📝 Insert data:', {
+                user_id: insertData.user_id,
+                url: insertData.url,
+                title: insertData.title
+            });
 
             const { data, error: insertError } = await supabase
                 .from('sbookmarktbl')
