@@ -39,11 +39,6 @@ export default function DashboardPage() {
 
                 setUser(session.user);
 
-                // Fetch bookmarks from database
-                // Note: Ensure the table 'sbookmarktbl' exists in your Supabase database
-                // If the table is in a custom schema (e.g., 'smartbookmark'), you may need to:
-                // 1. Move the table to the 'public' schema, OR
-                // 2. Grant access to the custom schema in Supabase dashboard
                 const { data, error: fetchError } = await supabase
                     .from('sbookmarktbl')
                     .select('*')
